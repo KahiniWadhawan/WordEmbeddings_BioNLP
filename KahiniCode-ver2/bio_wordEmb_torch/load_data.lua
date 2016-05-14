@@ -17,8 +17,8 @@ function load_data(N)
 %   vocab: Vocabulary containing index to word mapping.
 ]]--
 
-dataset = 'data/data.mat';
-data = matio.load(dataset);
+--dataset = 'data/data.mat';
+--data = matio.load(dataset);
 vocab_data = 'data/vocab.mat';
 train_data = 'data/train.mat';
 valid_data = 'data/valid.mat';
@@ -27,26 +27,12 @@ test_data = 'data/test.mat';
 
 --vocab = data['data']['vocab'];
 print('before')
-vocab = matio.load(vocab_data)['vocab'];
+vocab = matio.load(vocab_data)['vocab1'];   --revisit
 --vocab = vocab1:transpose(1,2);
 --print(#vocab)
 words = {}; 
 vocab_ByIndex = {};
 vocab_size = 0;
-
--- revisit - change this to treat my vocab table
---for i=1, #vocab do
---   length = (#vocab[i])[2];
---   word = ''
---   for c=1, length do
---     word = word .. string.char(vocab[i][1][c]);
---   end
---   words[word] = i;
---   table.insert(vocab_ByIndex, word)
---   vocab_size=i;
---end
---vocab = words;
---print(vocab)
 
 for i=1, #vocab do
       --print('inside vocab loop')
@@ -76,7 +62,7 @@ print('LOOKING UP ')
 print(vocab['pathogen'])
 
 --testData = data['data']['testData'];
-test = matio.load(test_data)['test'];
+test = matio.load(test_data)['test1'];
 -- already trasnposed in matlab
 testData = test:type('torch.IntTensor');
 --print(testData)
@@ -91,21 +77,26 @@ print(testData:type(),testData:size())
 train = matio.load(train_data)['train'];
 -- already trasnposed in matlab
 trainData = train:type('torch.IntTensor');
---trainData = train:transpose(1,2)
+--revist comment again
+--train_temp = train:type('torch.IntTensor');
+--print('trainData before')
+--print(train_temp:type(),train_temp:size());
+--
+--trainData = train_temp:transpose(1,2)
 --print('trainData ::')
 print('trainData')
 print(trainData:type(),trainData:size())
 
 
 --validData = data['data']['validData'];
-valid = matio.load(valid_data)['valid'];
+valid = matio.load(valid_data)['valid1'];
 -- already trasnposed in matlab
 validData = valid:type('torch.IntTensor');
 --validData = valid:transpose(1,2)
 print('validData')
 print(validData:type(),validData:size())
 
-
+-- accessing columns not rows, so can be applied directly to chunk/batch
 numdims = (#trainData)[1];
 D = numdims - 1;
 M = math.floor((#trainData)[2] / N);
