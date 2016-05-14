@@ -472,6 +472,7 @@ end
 -- converting vocab to a table to write to csv
 -- ----------------------------------------------------------------------
 function utils.write_vocabToCSV(config,sep)
+	print("------------- Inside write vocab to CSV --------------")
 	sep = sep or ','
 	local directory = config.CSV_DIR
 	local filename = 'vocab.csv'
@@ -548,61 +549,78 @@ function utils.write_train_samplesToCSV(config,sep)
 
 
 	-- create the matrix - 2D table
-	local train = {}
-	for i,line in ipairs(config.corpus_text) do
-		--create new row
-		train[i] = utils.getFullInputIndices(config,line)
+--	local train = {}
 
-	end
-
-	--print('train table')
-	--print(train)
-	-- write the table to csv field
-	local train_size = #train
-	local valid_size = math.floor(train_size/10)
-	local test_size = math.floor(train_size/10)
-	local valid_count = 0
-	local test_count = 0
 	local file = train_file
 
-	for i=1,#train do
-		--preparing validation and test set with random generator
---		math.randomseed(os.time())
---		math.random(#train)
---		rnd_num=math.random(#train)
---		print('rnd num ')
---		print(rnd_num)
-		--even give it to valid, div of 5 give it to test
+	for i,line in ipairs(config.corpus_text) do
+		print("------------- Inside for loop -------------- :: ",i)
+		--create new row
+		--train[i] = utils.getFullInputIndices(config,line)
+		--eliminating train mem data structure only to avoid out of memory issues
+		--local train_i_temp={}
+		local train_i_temp = utils.getFullInputIndices(config,line)
 
-		if  valid_count ~= valid_size and i%3 == 0 then
-			--print('inside valid count :: ')
-			--print(valid_count,i)
-			file = valid_file
-			valid_count = valid_count + 1
-		elseif test_count ~= test_size and i%2 == 0 then
-			--print('inside test count :: ')
-			--print(test_count,i)
-			file = test_file
-			test_count = test_count + 1
-
---		else
---			print('inside train file count ')
---			file = train_file
-		end
-
-		for j=1,#train[i] do
+		for j=1,#train_i_temp do
 			if j>1 then file:write(sep) end
-				file:write(train[i][j])
+			file:write(train_i_temp[j])
 		end
 		file:write('\n')
 
-	file = train_file
 	end
 
 	file:close()
 
-	--print('train, valid ,test sizes :: ')
-	--print(train_size,valid_size,test_size)
+	--print('train table')
+	--print(train)
+	-- write the table to csv field
+--	local train_size = #train
+--	local valid_size = math.floor(train_size/10)
+--	local test_size = math.floor(train_size/10)
+--	local valid_count = 0
+--	local test_count = 0
+--	local file = train_file
+
+--	for i=1,#train do
+--		--preparing validation and test set with random generator
+----		math.randomseed(os.time())
+----		math.random(#train)
+----		rnd_num=math.random(#train)
+----		print('rnd num ')
+----		print(rnd_num)
+--		--even give it to valid, div of 5 give it to test
+--
+--		if  valid_count ~= valid_size and i%3 == 0 then
+--			--print('inside valid count :: ')
+--			--print(valid_count,i)
+--			file = valid_file
+--			valid_count = valid_count + 1
+--		elseif test_count ~= test_size and i%2 == 0 then
+--			--print('inside test count :: ')
+--			--print(test_count,i)
+--			file = test_file
+--			test_count = test_count + 1
+--
+----		else
+----			print('inside train file count ')
+----			file = train_file
+--		end
+--
+--		for j=1,#train[i] do
+--			if j>1 then file:write(sep) end
+--				file:write(train[i][j])
+--		end
+--		file:write('\n')
+--
+--	file = train_file
+--	end
+--
+--	file:close()
+--
+--	--print('train, valid ,test sizes :: ')
+--	--print(train_size,valid_size,test_size)
+--
+
 end
 
 -- ----------------------------------------------------------------------------

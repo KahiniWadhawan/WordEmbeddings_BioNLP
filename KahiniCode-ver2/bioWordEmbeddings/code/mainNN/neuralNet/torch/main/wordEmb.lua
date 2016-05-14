@@ -58,6 +58,7 @@ function WordEmb:__init(config)
 	--print(self.corpus_text)
 
 	utils.write_vocabToCSV(self)
+	print("------------- vocab CSV generated successfully --------------")
 	utils.write_train_samplesToCSV(self)
 
 	-- ----------------------------------------------------

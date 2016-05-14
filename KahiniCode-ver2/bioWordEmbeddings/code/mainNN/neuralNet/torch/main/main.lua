@@ -50,7 +50,7 @@ cmd:option('-to_lower',1,'change the case of word to lower case')
 -- model params (general)
 -- --------------------------------------------------------------------------------------
 cmd:option('-wdim',300,'dimensionality of word embeddings') -- revisit - look more into this in glove paper
-cmd:option('-min_freq',2,'words that occur less than <int> times will not be taken for training')
+cmd:option('-min_freq',3,'words that occur less than <int> times will not be taken for training')
 cmd:option('-pre_train',1,'initialize word embeddings with pre-trained vectors?')
 cmd:option('-wwin',5,'word convolution units')  --revisit
 cmd:option('-hid_size',300,'hidden units')     --revisit - with Ronan paper
@@ -88,7 +88,7 @@ cmd:option('-create_logs',1,'create log file for the process')
 -- ------------------------------------------------------------------
 -- parse input params
 -- ------------------------------------------------------------------
-cmd:addTime('WordEmbeddings for Biomedical texts','%F %T')
+--cmd:addTime('WordEmbeddings for Biomedical texts','%F %T')
 params=cmd:parse(arg)
 
 if params.print_params==1 then
