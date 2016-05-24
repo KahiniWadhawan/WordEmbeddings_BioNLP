@@ -487,6 +487,18 @@ function utils.write_vocabToCSV(config,sep)
 	end
 	file:close()
 
+	-- dumping word2index and index2word 
+        local filename = 'word2index.dat'
+        local file_path =directory..filename
+        local file = assert(io.open(file_path, "w")) 
+        torch.save(file,config.word2index)
+        file.close()
+        
+        local filename = 'index2word.dat'
+        local file_path =directory..filename
+        local file = assert(io.open(file_path, "w"))
+        torch.save(file,config.index2word)
+        file.close()
 
 end
 
