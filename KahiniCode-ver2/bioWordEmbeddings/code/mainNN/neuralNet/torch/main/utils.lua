@@ -196,7 +196,7 @@ function utils.buildVocab(config)
 	-- Fill the vocabulary frequency map
 	config.total_count=0
 	config.corpus_size=0
-	config.corpus_text={}
+
 	-- revisit to check - needs to out of for loop??
 	--total_count=0
 	--corpus_size=0
@@ -233,7 +233,7 @@ function utils.buildVocab(config)
 	pfile:close()
 
 	-- generate corpus text from text windows
-	utils.gen_corpus_text(config)
+	--utils.gen_corpus_text(config)
 
 	--print('inside buildVocab func, outside iter dir loop')
 	--print('printing vocab and word2index')
@@ -297,6 +297,7 @@ end
 -- Generate corpus text from text windows to create tensors
 -- -------------------------------------------------------------------------
 function utils.gen_corpus_text(config)
+	config.corpus_text={}
 	-- initializing variables to iter a directory
 	print('generating corpus text')
 	local directory = config.textwinFiles_DIR
@@ -502,7 +503,7 @@ function utils.write_vocabToCSV(config,sep)
 
 end
 
-function utils.getFullInputIndices(config,sentence)
+function utils.getFullInputIndices(config,sentence,load_vocab_from_dumps)
 	--print("------------- Inside get fullInput Indices --------------")
 	--for independent testing
 	local train_sample={}
@@ -511,20 +512,37 @@ function utils.getFullInputIndices(config,sentence)
 	local words=utils.getNgrams(config,sentence,1,pad)
 	--print('words :: ',words)
 	--print(#words)
+	if load_vocab_from_dumps == true then
+		word2index_loaded = torch.load()
+	end
 	-- replacing words with their indices in word2index or index2word
 	for i,word in ipairs(words) do
 		word=utils.splitByChar(word,' ')[1]
-		if config.word2index[word]==nil then
-			--if word2index[word]==nil then
-			train_sample[i]=config.word2index['<UK>']
-			--rnd_wordTensor[i]=word2index['<UK>']
+		if load_vocab_from_dumps == false then
+			if config.word2index[word]==nil then
+				--if word2index[word]==nil then
+				train_sample[i]=config.word2index['<UK>']
+				--rnd_wordTensor[i]=word2index['<UK>']
 
+			else
+				train_sample[i]=config.word2index[word]
+				--rnd_wordTensor[i]=word2index[word]
+
+			end
+			--print('ith train sample :: ',train_sample[i])
 		else
-			train_sample[i]=config.word2index[word]
-			--rnd_wordTensor[i]=word2index[word]
+			if word2index_loaded[word]==nil then
+				--if word2index[word]==nil then
+				train_sample[i]=word2index_loaded['<UK>']
+				--rnd_wordTensor[i]=word2index['<UK>']
 
-		end
-		--print('ith train sample :: ',train_sample[i])
+			else
+				train_sample[i]=word2index_loaded[word]
+				--rnd_wordTensor[i]=word2index[word]
+
+			end
+		end   --if load_vocab_from_dumps condn
+
 	end
 --	if config.gpu==1 then
 --		true_wordTensor=true_wordTensor:cuda()
@@ -538,6 +556,7 @@ end
 -- -----------------------------------------------------------------------------
 -- Writing training samples to csv
 -- -----------------------------------------------------------------------------
+load_vocab_from_dumps = true
 function utils.write_train_samplesToCSV(config,sep)
 	print("------------- Inside write train samples to CSV --------------")
 	sep = sep or ','
@@ -571,7 +590,7 @@ function utils.write_train_samplesToCSV(config,sep)
 		--train[i] = utils.getFullInputIndices(config,line)
 		--eliminating train mem data structure only to avoid out of memory issues
 		--local train_i_temp={}
-		local train_i_temp = utils.getFullInputIndices(config,line)
+		local train_i_temp = utils.getFullInputIndices(config,line,load_vocab_from_dumps)
 
 		for j=1,#train_i_temp do
 			if j>1 then file:write(sep) end

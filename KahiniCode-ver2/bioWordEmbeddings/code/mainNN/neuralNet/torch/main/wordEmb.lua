@@ -50,16 +50,24 @@ function WordEmb:__init(config)
 	-- build vocab before training the nn
 	-- ---------------------------------------------------
 	utils.buildVocab(self)
-
+	utils.write_vocabToCSV(self)
 	-- printing vocab, word2index
 	--print(self.vocab)
 	--print(self.index2word)
 	--print(self.word2index)
 	--print(self.corpus_text)
+	-- moving this function from utils to here
+	-- generate corpus text from text windows
 
-	utils.write_vocabToCSV(self)
-	print("------------- vocab CSV generated successfully --------------")
-	utils.write_train_samplesToCSV(self)
+	--uncomment the following block - when needed to run
+--	utils.gen_corpus_text(self)
+--	-- newly added function call here
+--
+
+--	print("------------- vocab CSV generated successfully --------------")
+--	utils.write_train_samplesToCSV(self)
+
+	--uncomment the above block - when needed to run
 
 	-- ----------------------------------------------------
 	-- build the neural network
